@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+
+    <!-- Icon -->
+    <link
+      rel="icon"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.18.1/icons/house-fill.svg"
+    />
+
+    <!-- Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./roots/css/style.css" />
+
+    <style>
+      section {
+        height: 100vh;
+        width: 100%;
+        background-color: #121212; /* Màu nền tối */
+      }
+
+      #registerBtn:hover {
+        color: #0d6efd !important;
+      }
+
+      #loginBtn:hover {
+        color: #0d6efd !important;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- main -->
+    <section>
+      <div class="container" id="auth"></div>
+    </section>
+
+    <!-- Jquery -->
+    <script src="./roots/js/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+      integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+      integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      const form = [
+        {
+          login: `
+            <div class="row justify-content-center align-items-center min-vh-100">
+              <div class="col-12 col-md-6 col-lg-4">
+                <div class="card shadow-sm border-0">
+                  <div class="card-body p-4">
+                    <h3 class="text-center mb-4">Login</h3>
+                    <form id="login" method="post">
+                      <div class="mb-3">
+                        <label for="email" class="form-label">Email address</label>
+                        <input
+                          type="email"
+                          class="form-control"
+                          id="email"
+                          name="email"
+                          aria-describedby="emailHelp"
+                          placeholder="Enter your email"
+                          required
+                        />
+                        <div id="emailHelp" class="form-text"></div>
+                      </div>
+                      <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input
+                          type="password"
+                          class="form-control"
+                          id="password"
+                          name="password"
+                          placeholder="Enter your password"
+                          required
+                        />
+                        <div id="passwordHelp" class="form-text"></div>
+                      </div>
+                      <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-block">
+                          Login
+                        </button>
+                      </div>
+                      <div class="text-center mt-3">
+                        <button id="registerBtn" class="border-0 bg-white">Register</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `,
+        },
+        {
+          register: `
+            <div class="row justify-content-center align-items-center min-vh-100">
+              <div class="col-12 col
+              -md-6 col-lg-4">
+                <div class="card shadow-sm border-0">
+                  <div class="card-body p-4">
+                    <h3 class="text-center mb-4">Register</h3>
+                    <form action="register.php" method="post">
+                      <div class="mb-3">
+                        <label for="email" class="form-label">Email address</label>
+                        <input
+                          type="email"
+                          class="form-control"
+                          id="email"
+                          name="email"
+                          aria-describedby="emailHelp"
+                          placeholder="Enter your email"
+                          required
+                        />
+                        <div id="emailHelp" class="form-text"></div>
+                      </div>
+                      <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input
+                          type="password"
+                          class="form-control"
+                          id="password"
+                          name="password"
+                          placeholder="Enter your password"
+                          required
+                        />
+                        <div id="passwordHelp" class="form-text"></div>
+                      </div>
+                      <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-block">
+                          Register
+                        </button>
+                      </div>
+                        <div class="text-center mt-3">
+                        <button id="loginBtn" class="border-0 bg-white">Login</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `,
+        },
+      ];
+
+      $(document).ready(function () {
+        $("#auth").html(form[0].login);
+
+        $("#login").submit(function (e) {
+          e.preventDefault();
+
+          const email = $("#email").val();
+          const password = $("#password").val();
+
+          $.ajax({
+            url: "http://localhost:8081/api/employees/sign-in",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+              email: email,
+              password: password,
+            }),
+            success: function (data) {
+              console.log(data);
+              if (data !== null) {
+                // Lưu token vào localStorage
+                localStorage.setItem("login", "true");
+                localStorage.setItem("position", data.position);
+                localStorage.setItem("employee_id", data.employeeId);
+                localStorage.setItem("employee_name", data.fullName);
+                window.location.href = "index.html";
+              } else {
+                alert(data.message);
+              }
+            },
+            error: function (xhr, status, error) {
+              console.log("Error:", error);
+            },
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

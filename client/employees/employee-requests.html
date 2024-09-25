@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yêu cầu nhân viên</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 20px;
+        }
+
+        .form-section {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="text-center">Yêu cầu nhân viên</h1>
+
+        <!-- Form Xin nghỉ phép -->
+        <div class="form-section">
+            <h3>Xin nghỉ phép</h3>
+            <form id="leaveRequestForm">
+                <div class="mb-3">
+                    <label for="leaveReason" class="form-label">Lý do</label>
+                    <textarea class="form-control" id="leaveReason" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Gửi yêu cầu nghỉ phép</button>
+            </form>
+        </div>
+
+        <!-- Form Cập nhật bảng chấm công -->
+        <div class="form-section">
+            <h3>Cập nhật bảng chấm công</h3>
+            <form id="updateTimesheetForm">
+                <div class="mb-3">
+                    <label for="timesheetDetails" class="form-label">Chi tiết chấm công</label>
+                    <textarea class="form-control" id="timesheetDetails" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Cập nhật chấm công</button>
+            </form>
+        </div>
+
+        <!-- Form Check-In -->
+        <div class="form-section">
+            <h3>Check-In</h3>
+            <form id="checkInForm">
+                <div class="mb-3">
+                    <label for="checkInDetails" class="form-label">Chi tiết Check-In</label>
+                    <textarea class="form-control" id="checkInDetails" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Check-In</button>
+            </form>
+        </div>
+
+        <!-- Form Check-Out -->
+        <div class="form-section">
+            <h3>Check-Out</h3>
+            <form id="checkOutForm">
+                <div class="mb-3">
+                    <label for="checkOutDetails" class="form-label">Chi tiết Check-Out</label>
+                    <textarea class="form-control" id="checkOutDetails" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Check-Out</button>
+            </form>
+        </div>
+
+        <!-- Form Xin làm việc tại nhà -->
+        <div class="form-section">
+            <h3>Xin làm việc tại nhà (WFH)</h3>
+            <form id="wfhRequestForm">
+                <div class="mb-3">
+                    <label for="wfhReason" class="form-label">Lý do</label>
+                    <textarea class="form-control" id="wfhReason" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Gửi yêu cầu WFH</button>
+            </form>
+        </div>
+
+        <!-- Form Phê duyệt/Từ chối yêu cầu -->
+        <div class="form-section">
+            <h3>Phê duyệt/Từ chối yêu cầu</h3>
+            <form id="approveRejectForm">
+                <div class="mb-3">
+                    <label for="requestId" class="form-label">Mã yêu cầu</label>
+                    <input type="number" class="form-control" id="requestId" required>
+                </div>
+                <div class="mb-3">
+                    <label for="employeeId" class="form-label">Mã nhân viên</label>
+                    <input type="number" class="form-control" id="employeeId" required>
+                </div>
+                <button type="button" class="btn btn-success" id="approveRequestBtn">Phê duyệt</button>
+                <button type="button" class="btn btn-danger" id="rejectRequestBtn">Từ chối</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script>
+        $(document).ready(function () {
+            const employeeId = 1; // Mã nhân viên, thay thế bằng mã động nếu cần
+
+            // Xử lý gửi yêu cầu nghỉ phép
+            $('#leaveRequestForm').submit(function (e) {
+                e.preventDefault();
+                const data = {
+                    reason: $('#leaveReason').val()
+                };
+                $.ajax({
+                    url: `/api/employees/${employeeId}/leave-request`,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function () {
+                        alert('Yêu cầu nghỉ phép đã được gửi thành công.');
+                        $('#leaveRequestForm')[0].reset();
+                    },
+                    error: function () {
+                        alert('Lỗi khi gửi yêu cầu nghỉ phép.');
+                    }
+                });
+            });
+
+            // Xử lý cập nhật bảng chấm công
+            $('#updateTimesheetForm').submit(function (e) {
+                e.preventDefault();
+                const data = {
+                    details: $('#timesheetDetails').val()
+                };
+                $.ajax({
+                    url: `/api/employees/${employeeId}/update-timesheet`,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function () {
+                        alert('Bảng chấm công đã được cập nhật thành công.');
+                        $('#updateTimesheetForm')[0].reset();
+                    },
+                    error: function () {
+                        alert('Lỗi khi cập nhật bảng chấm công.');
+                    }
+                });
+            });
+
+            // Xử lý Check-In
+            $('#checkInForm').submit(function (e) {
+                e.preventDefault();
+                const data = {
+                    details: $('#checkInDetails').val()
+                };
+                $.ajax({
+                    url: `/api/employees/${employeeId}/check-in`,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function () {
+                        alert('Check-in thành công.');
+                        $('#checkInForm')[0].reset();
+                    },
+                    error: function () {
+                        alert('Lỗi khi Check-in.');
+                    }
+                });
+            });
+
+            // Xử lý Check-Out
+            $('#checkOutForm').submit(function (e) {
+                e.preventDefault();
+                const data = {
+                    details: $('#checkOutDetails').val()
+                };
+                $.ajax({
+                    url: `/api/employees/${employeeId}/check-out`,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function () {
+                        alert('Check-out thành công.');
+                        $('#checkOutForm')[0].reset();
+                    },
+                    error: function () {
+                        alert('Lỗi khi Check-out.');
+                    }
+                });
+            });
+
+            // Xử lý yêu cầu làm việc tại nhà
+            $('#wfhRequestForm').submit(function (e) {
+                e.preventDefault();
+                const data = {
+                    reason: $('#wfhReason').val()
+                };
+                $.ajax({
+                    url: `/api/employees/${employeeId}/wfh-request`,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function () {
+                        alert('Yêu cầu làm việc tại nhà đã được gửi thành công.');
+                        $('#wfhRequestForm')[0].reset();
+                    },
+                    error: function () {
+                        alert('Lỗi khi gửi yêu cầu làm việc tại nhà.');
+                    }
+                });
+            });
+
+            // Xử lý phê duyệt yêu cầu
+            $('#approveRequestBtn').click(function () {
+                const requestId = $('#requestId').val();
+                $.ajax({
+                    url: `/api/employees/${employeeId}/approve-request/${requestId}`,
+                    type: 'POST',
+                    success: function () {
+                        alert('Yêu cầu đã được phê duyệt thành công.');
+                        $('#approveRejectForm')[0].reset();
+                    },
+                    error: function () {
+                        alert('Lỗi khi phê duyệt yêu cầu.');
+                    }
+                });
+            });
+
+            // Xử lý từ chối yêu cầu
+            $('#rejectRequestBtn').click(function () {
+                const requestId = $('#requestId').val();
+                $.ajax({
+                    url: `/api/employees/${employeeId}/reject-request/${requestId}`,
+                    type: 'POST',
+                    success: function () {
+                        alert('Yêu cầu đã bị từ chối.');
+                        $('#approveRejectForm')[0].reset();
+                    },
+                    error: function () {
+                        alert('Lỗi khi từ chối yêu cầu.');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
