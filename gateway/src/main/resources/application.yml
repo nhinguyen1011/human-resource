@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: api-gateway  # Tên của API Gateway
+
+  cloud:
+    gateway:
+      routes:
+        - id: employee-service
+          uri: http://localhost:8081  # Định tuyến trực tiếp đến địa chỉ của employee-service
+          predicates:
+            - Path=/api/employees/**  # Định nghĩa đường dẫn sẽ được định tuyến đến employee-service
+        - id: activity-service
+          uri: http://localhost:8082  # Định tuyến trực tiếp đến địa chỉ của department-service
+          predicates:
+            - Path=/api/activity/**  # Định nghĩa đường dẫn sẽ được định tuyến đến department-service
+        - id: reward-service
+          uri: http://localhost:8083  # Định tuyến trực tiếp đến địa chỉ của department-service
+          predicates:
+            - Path=/api/rewards/**
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"  # Cho phép hiển thị tất cả các endpoint quản lý (như health, info)
+  endpoint:
+    health:
+      show-details: always  # Luôn hiển thị chi tiết thông tin health check
